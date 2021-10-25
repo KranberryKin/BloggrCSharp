@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using BloggrCSharp.Models;
 using Dapper;
 
@@ -47,5 +50,17 @@ namespace BloggrCSharp.Repositories
             _db.Execute(sql, update);
             return update;
         }
+
+    internal List<Blog> GetBlogsByAccountId(string userId)
+    {
+        string sql = "SELECT * FROM blogs b WHERE b.creatorId = @userId;";
+        return _db.Query<Blog>(sql, new {userId}).ToList();
     }
+
+    internal List<Comment> GetCommentsByAccountId(string userId)
+    {
+        string sql = "SELECT * FROM comments c WHERE c.creatorId = @userId;";
+        return _db.Query<Comment>(sql, new {userId}).ToList();
+    }
+  }
 }

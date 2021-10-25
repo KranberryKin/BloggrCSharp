@@ -37,6 +37,10 @@ namespace BloggrCSharp.Controllers
         try
         {
              var blog = _bs.GetBlogById(blogId);
+             if (blog == null)
+             {
+               return BadRequest("No Blog Here");
+             }
              return Ok(blog);
         }
         catch (System.Exception e)
@@ -73,11 +77,11 @@ namespace BloggrCSharp.Controllers
         }
       }
       [HttpPut("{blogId}")]
-      public ActionResult<Blog> UpdateBlog(int blogId)
+      public ActionResult<Blog> UpdateBlog(int blogId, [FromBody] Blog blogData)
       {
         try
         {
-             var blog = _bs.UpdateBlog(blogId);
+             var blog = _bs.UpdateBlog(blogId, blogData);
              return Ok(blog);
         }
         catch (System.Exception e)
@@ -86,11 +90,12 @@ namespace BloggrCSharp.Controllers
         }
       }
       [HttpDelete("{blogId}")]
-      public ActionResult<Blog> DeleteBlog(int blogId)
+      public async Task<ActionResult> DeleteBlog(int blogId)
       {
         try
         {
-             _bs.DeleteBlog(blogId);
+             Account userInfo = await HttpContext.GetUserInfoAsync<Account>();
+             _bs.DeleteBlog(blogId, userInfo.Id);
              return Ok("Success");
         }
         catch (System.Exception e)

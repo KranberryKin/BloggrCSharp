@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Linq;
 using BloggrCSharp.Models;
 using Dapper;
 
@@ -15,44 +16,63 @@ namespace BloggrCSharp.Repositories
     }
     internal Comment GetComment(int commentId)
     {
-      string sql = "SELECT * FROM comments WHERE id = @commentId;";
-      return _db.QueryFirstOrDefault<Comment>(sql, new {commentId});
+      string sql = @"
+      SELECT 
+      c.*,
+      a.*
+      FROM comments c 
+      JOIN accounts a
+      on a.id = c.creatorId
+      WHERE c.id = @commentId;";
+      return _db.Query<Comment, Account, Comment>(sql,(c, a) =>
+      {
+        c.Creator = a;
+        return c;
+      } , new {commentId}).FirstOrDefault();
     }
 
     internal Comment CreateComment(Comment commentData)
     {
       string sql = @"
       INSERT INTO comments
-        (body)
+        (body, creatorId, blog)
       VALUES
-        (@Body);
+        (@Body, @CreatorId, @Blog);
+        SELECT LAST_INSERT_ID();
       ";
-      var id = _db.ExecuteScalar<int>(sql, new {commentData});
-      commentData.Id = id;
-      return commentData;
+      var id = _db.ExecuteScalar<int>(sql, commentData);
+      var gottenComment = GetComment(id);
+      return gottenComment;
     }
 
-    internal Comment UpdateComment(int commentId)
+    internal Comment UpdateComment(Comment commentData)
     {
       string sql = @"
       UPDATE comments c
       SET
         body = @Body
-      WHERE c.id = @commentId;
+      WHERE c.id = @Id;
       ";
-      return _db.QueryFirstOrDefault<Comment>(sql, new {commentId});
+      var affectedRows =  _db.Execute(sql, commentData);
+       if (affectedRows > 1)
+      {
+        throw new System.Exception("NEIN");
+      }
+      if (affectedRows == 0)
+      {
+        throw new System.Exception("The update failed");
+      }
+      return commentData;
     }
 
-    internal Comment DeleteComment(int commentId)
+    internal void DeleteComment(int commentId)
     {
-      Comment foundComment = GetComment(commentId);
       string sql = "DELETE FROM comments WHERE id = @commentId;";
       var affectedRows = _db.ExecuteScalar<int>(sql, new {commentId});
       if (affectedRows == 0)
       {
         throw new Exception("Failed to Delete");
       }
-      return foundComment;
     }
   }
 }

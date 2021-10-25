@@ -34,14 +34,25 @@ namespace BloggrCSharp.Services
       return _br.CreateBlog(blogData);
     }
 
-    internal Blog UpdateBlog(int blogId)
+    internal Blog UpdateBlog(int blogId, Blog blogData)
     {
-      return _br.UpdateBlog(blogId);
+      Blog foundBlog = GetBlogById(blogId);
+      if (foundBlog == null)
+      {
+        throw new Exception("Can't find Blog");
+      }
+      blogData.Id = blogId;
+      return _br.UpdateBlog(blogData);
     }
 
-    internal Blog DeleteBlog(int blogId)
+    internal void DeleteBlog(int blogId, string creatorId)
     {
-      return _br.DeleteBlog(blogId);
+       Blog foundBlog = GetBlogById(blogId);
+      if (foundBlog.CreatorId != creatorId)
+      {
+        throw new Exception("This isn't your Blog!");
+      }
+      _br.DeleteBlog(blogId);
     }
   }
 }

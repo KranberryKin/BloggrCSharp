@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using BloggrCSharp.Models;
 using BloggrCSharp.Repositories;
 
@@ -36,5 +38,20 @@ namespace BloggrCSharp.Services
             original.Picture = editData.Picture.Length > 0 ? editData.Picture : original.Picture;
             return _repo.Edit(original);
         }
+
+    internal List<Blog> GetBlogsByAccountId(string userId)
+    {
+        return _repo.GetBlogsByAccountId(userId);
     }
+
+    internal List<Comment> GetCommentsByAccountId(string userId)
+    {
+        return _repo.GetCommentsByAccountId(userId);
+    }
+
+    internal Account UpdateAccount(Account accountData)
+    {
+        return _repo.Edit(accountData);
+    }
+  }
 }

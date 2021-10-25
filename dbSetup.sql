@@ -11,8 +11,8 @@ SELECT * FROM accounts;
 
 CREATE TABLE IF NOT EXISTS blogs(
   id int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
-  title VARCHAR(40) COMMENT 'Blog Title',
-  body VARCHAR(255) COMMENT 'Blog Body',
+  title VARCHAR(80) COMMENT 'Blog Title',
+  body VARCHAR(5000) COMMENT 'Blog Body',
   imgUrl VARCHAR(255) COMMENT 'Blog Img Link',
   published TINYINT DEFAULT 0 COMMENT 'Default False',
   creatorId VARCHAR(255) COMMENT 'Creator'
@@ -22,5 +22,5 @@ CREATE TABLE IF NOT EXISTS comments(
 id int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
 creatorId VARCHAR(255) COMMENT 'Creator',
 body VARCHAR(255) COMMENT 'Comments Body',
-blogId int COMMENT 'Set Id when comment on specific Blog.'
+blog int COMMENT 'Set Id when comment on specific Blog.'
 ) default charset utf8 COMMENT '';

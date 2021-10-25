@@ -34,6 +34,55 @@ namespace BloggrCSharp.Controllers
                 return BadRequest(e.Message);
             }
         }
+        [HttpGet("blogs")]
+        [Authorize]
+        public async Task<ActionResult<List<Blog>>> GetBlogsByAccountId()
+        {
+            try
+            {
+             Account userInfo = await HttpContext.GetUserInfoAsync<Account>();
+
+                 var blogs = _accountService.GetBlogsByAccountId(userInfo.Id);
+                 return Ok(blogs);
+            }
+            catch (System.Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("comments")]
+        [Authorize]
+        public async Task<ActionResult<List<Comment>>> GetCommentsByAccountId()
+        {
+            try
+            {
+             Account userInfo = await HttpContext.GetUserInfoAsync<Account>();
+
+                 var comments = _accountService.GetCommentsByAccountId(userInfo.Id);
+                 return Ok(comments);
+            }
+            catch (System.Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpPut]
+        [Authorize]
+        public async Task<ActionResult<Account>> UpdateAccount([FromBody] Account accountData)
+        {
+            try
+            {
+             Account userInfo = await HttpContext.GetUserInfoAsync<Account>();
+             accountData.Id = userInfo.Id;
+                 var account = _accountService.UpdateAccount(accountData);
+                 return Ok(account);
+            }
+            catch (System.Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 
 

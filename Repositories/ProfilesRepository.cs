@@ -24,7 +24,7 @@ namespace BloggrCSharp.Repositories
 
     internal List<Blog> GetBlogsByProfileId(string profileId)
     {
-      string sql = "SELECT * FROM blogs b WHERE b.creatorId = @profileId;";
+      string sql = "SELECT * FROM blogs b WHERE b.creatorId = @profileId AND b.published = 1;";
       return _bd.Query<Blog>(sql, new {profileId}).ToList();
     }
 

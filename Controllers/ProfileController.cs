@@ -7,11 +7,11 @@ namespace BloggrCSharp.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-  public class ProfileController : ControllerBase
+  public class ProfilesController : ControllerBase
   {
     private readonly ProfilesService _ps;
 
-    public ProfileController(ProfilesService ps)
+    public ProfilesController(ProfilesService ps)
     {
       _ps = ps;
     }

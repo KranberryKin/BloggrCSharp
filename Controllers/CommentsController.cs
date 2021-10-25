@@ -22,7 +22,7 @@ namespace BloggrCSharp.Controllers
     {
       try
       {
-             Account userInfo = await HttpContext.GetUserInfoAsync<Account>();
+          Account userInfo = await HttpContext.GetUserInfoAsync<Account>();
           commentData.CreatorId = userInfo.Id;
            var comment = _cs.CreateComment(commentData);
            return Ok(comment);
@@ -33,11 +33,11 @@ namespace BloggrCSharp.Controllers
       }
     }
     [HttpPut("{commentId}")]
-    public ActionResult<Comment> UpdateComment(int commentId)
+    public ActionResult<Comment> UpdateComment(int commentId, [FromBody] Comment commentData)
     {
       try
       {
-           var comment = _cs.UpdateComment(commentId);
+           var comment = _cs.UpdateComment(commentId, commentData);
            return Ok(comment);
       }
       catch (System.Exception e)
@@ -46,12 +46,13 @@ namespace BloggrCSharp.Controllers
       }
     }
     [HttpDelete("{commentId}")]
-    public ActionResult<Comment> DeleteComment(int commentId)
+    public async Task<ActionResult<Comment>> DeleteComment(int commentId)
     {
       try
       {
-           var comment = _cs.DeleteComment(commentId);
-           return Ok(comment);
+           Account userInfo = await HttpContext.GetUserInfoAsync<Account>();
+           _cs.DeleteComment(commentId, userInfo.Id);
+           return Ok("DeYEETed");
       }
       catch (System.Exception e)
       {

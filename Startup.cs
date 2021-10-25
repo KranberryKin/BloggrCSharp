@@ -42,6 +42,15 @@ namespace BloggrCSharp
             
             services.AddScoped<AccountsRepository>();
             services.AddScoped<AccountService>();
+
+            services.AddTransient<ProfilesRepository>();
+            services.AddTransient<ProfilesService>();
+
+            services.AddTransient<CommentsRepository>();
+            services.AddTransient<CommentsService>();
+
+            services.AddTransient<BlogsRepository>();
+            services.AddTransient<BlogsService>();
         }
 
         private void ConfigureCors(IServiceCollection services)
